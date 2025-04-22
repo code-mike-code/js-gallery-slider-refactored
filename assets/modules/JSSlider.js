@@ -13,6 +13,9 @@ class JSSlider {
         this.thumbsContainer = this.sliderRootElement.querySelector('.js-slider__thumbs')
         this.currentSlideIndex = 0
 
+        this.intervalId = null
+        this.autoplayInterval = 2500
+
         console.log('JSSlider utworzony'); // JSSlider utworzony
     }
     initGalleryEvents() {
@@ -31,6 +34,8 @@ class JSSlider {
         const imageSrc = clickedImageElement.querySelector('img').src
         this.imageElement.src = imageSrc
         const groupName = clickedImageElement.dataset.sliderGroupName
+
+        this.autoplayStart() // uruchomienie autoplay
 
         console.log('grupa obrazków', groupName); // grupa obrazków
 
@@ -70,12 +75,8 @@ class JSSlider {
         console.log('aktualny index slajdu', this.currentSlideIndex); // aktualny index slajdu
     }
     changeSlide(newIndex) {
-        if (newIndex < 0 || newIndex >= this.currentGroupImages.length){
-            return
-        }
-
         const newImageGalleryItem = this.currentGroupImages[newIndex]
-        const newImageSrc =newImageGalleryItem.querySelector('img').src
+        const newImageSrc = newImageGalleryItem.querySelector('img').src
 
         this.imageElement.src = newImageSrc
 
@@ -92,16 +93,27 @@ class JSSlider {
         })
 
         this.currentSlideIndex = newIndex
-        console.log('zamiana slajdu na index'); // zamiana slajdu na index
+        console.log('zamiana slajdu na index', this.currentSlideIndex); // zamiana slajdu na index
     }
-    handleNextSlide(){
-        this.changeSlide(this.currentSlideIndex + 1)
+    handleNextSlide() {
+        let newIndex = this.currentSlideIndex + 1
+        if (newIndex >= this.currentGroupImages.length) {
+            newIndex = 0
+        }
+        this.changeSlide(newIndex)
     }
     handlePrevSlide() {
-        this.changeSlide(this.currentSlideIndex - 1)
+        let newIndex = this.currentSlideIndex - 1
+        if (newIndex < 0) {
+            newIndex = this.currentGroupImages.length - 1
+        }
+        this.changeSlide(newIndex)
     }
     closeSlider() {
         this.sliderRootElement.classList.remove('js-slider--active')
+
+        this.autoplayStop() // zatrzymanie autoplay
+
         console.log('zamknięcie slider-a'); // zamknięcie slider-a
     }
     initSliderEvents() {
@@ -126,7 +138,7 @@ class JSSlider {
 
        navButtons.forEach(button => {
         button.addEventListener('mouseenter', () => {
-            
+
             console.log('mouse enter event'); // mouse enter event
 
             const stopSliderEvent = new CustomEvent('js-slider-stop')
@@ -145,11 +157,34 @@ class JSSlider {
        })
 
     }
-    run(){
+    autoplayStart() {
+        if (this.intervalId === null) {
+            console.log('autoplay start'); // autoplay start
+            this.intervalId = setInterval(() => {
+                this.handleNextSlide()
+            }, this.autoplayInterval)
+        }
+    }
+    autoplayStop() {
+        if (this.intervalId !== null) {
+            console.log('autoplay stop'); // autoplay stop
+            clearInterval(this.intervalId)
+            this.intervalId = null
+        }
+    }
+    run() {
         console.log('JSSlider został uruchomiony'); // JSSlider został uruchomiony
 
         this.initGalleryEvents()
         this.initSliderEvents()
+
+        this.sliderRootElement.addEventListener('js-slider-start', () => {
+            this.autoplayStart()
+        })
+
+        this.sliderRootElement.addEventListener('js-slider-stop', () => {
+            this.autoplayStop()
+        })
     }
 }
 
