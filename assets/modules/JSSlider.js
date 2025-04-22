@@ -111,7 +111,7 @@ class JSSlider {
         this.prevButton.addEventListener('click', () => {
             this.handlePrevSlide()
         })
-        
+
         const zoomElement = this.sliderRootElement.querySelector('.js-slider__zoom')
         if (zoomElement) {
             zoomElement.addEventListener('click', event => {
@@ -120,6 +120,30 @@ class JSSlider {
                 }
             })
         }
+
+        // zadanie dodatkowe
+       const navButtons = [this.nextButton, this.prevButton]
+
+       navButtons.forEach(button => {
+        button.addEventListener('mouseenter', () => {
+            
+            console.log('mouse enter event'); // mouse enter event
+
+            const stopSliderEvent = new CustomEvent('js-slider-stop')
+            this.sliderRootElement.dispatchEvent(stopSliderEvent)
+        })
+       })
+
+       navButtons.forEach(button => {
+        button.addEventListener('mouseleave', () => {
+
+            console.log('mouse leave event'); // mouse leave event
+
+            const startSliderEvent = new CustomEvent('js-slider-start')
+            this.sliderRootElement.dispatchEvent(startSliderEvent)
+        })
+       })
+
     }
     run(){
         console.log('JSSlider został uruchomiony'); // JSSlider został uruchomiony
