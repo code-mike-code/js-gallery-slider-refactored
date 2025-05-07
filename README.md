@@ -1,27 +1,50 @@
-> ⭐ ***README** to coś więcej niż opis. Poprzez nie **pokazujesz swoje mocne strony** – swoją dokładność, sposób myślenia i podejście do rozwiązywania problemów. Niech Twoje README pokaże, że masz **świetne predyspozycje do rozwoju!***
-> 
-> 🎁 *Zacznij od razu. Skorzystaj z **[szablonu README i wskazówek](https://github.com/devmentor-pl/readme-template)**.* 
+# JavaScript: ECMAScript 2015+ – Gallery Slider Refactor
 
-&nbsp;
+### See the live version of ECMAScript Gallery Slider
+
+This project is part of my learning path with the mentor program at devmentor.pl. The goal was to refactor a legacy image slider by applying modern JavaScript standards (ES6+), modular structure, and proper code separation.
 
 
-# JavaScript: ECMAScript 2015+ 
+## 🔄 Project Overview
+The original slider was functional but built with older JavaScript syntax and global functions. My job was to rebuild it into a clean, maintainable class-based module, making full use of ECMAScript 2015+ features such as:
 
-Twój poprzednik stworzył pokaz slajdów, który masz przebudować. Wykorzystaj w tym celu najnowsze standardy języka JavaScript.
+• class and constructor
+• arrow functions
+• destructuring
+• default parameters
+• spread/rest syntax
+• module exports/imports
 
-Utwórz klasę będąca modułem – niech reprezentuje nasz slider. Umieść ją w osobnym pliku, który zaimportujesz w odpowiednim miejscu (pamiętaj również o eksporcie tej klasy).
+The new structure allows for easier debugging, maintenance, and further scalability.
 
-Wszędzie, gdzie to możliwe, wykorzystuj rozwiązania poznane w ostatnio przerabianym materiale: destrukturyzację, rozproszenie, wartości domyślne, funkcje strzałkowe itp.
-
-Pamiętaj o odpowiednim nazywaniu metod w klasie. Im bardziej jednoznacznie nazwa określa sposób działania funkcji, tym lepiej.
-
-Każda metoda powinna realizować jedno zadanie ([zasada pojedynczej odpowiedzialności](https://pl.wikipedia.org/wiki/Zasada_jednej_odpowiedzialno%C5%9Bci)). Jeśli tak nie jest, spróbują ją podzielić na mniejsze części.
-
-Wykorzystaj webpacka, aby napisany kod JavaScript był wspierany przez starsze przeglądarki, tj. wszystkie wydane np. po 2016 roku i posiadające udział w rynku na poziomie co najmniej 1%.
-
-**Uwaga:** Jeżeli po instalacji potrzebnych paczek uruchomiłeś projekt, lecz obrazy nie wczytują się, to prawdopodobnie zainstalowałeś webpack-dev-server w wersji powyżej 4. Wówczas wystarczy, że w pliku `webpack.config.js` określisz miejsce, z którego grafiki mają być serwowane. Możesz to zrobić przy pomocy tego ustawienia: 
+## 🧱 Key Concepts Applied
+### 🧩 Class-Based Architecture
+The core logic now lives in a single class:
 ```
-const path = require('path');
+import JSSlider from './modules/JSSlider';
+
+const jsSlider = new JSSlider('.gallery__item');
+jsSlider.run();
+```
+
+This class encapsulates all behaviors, internal state, and DOM interactions, following the Single Responsibility Principle.
+
+
+![](./assets/img/img1.png)
+
+
+## 🔌 Modular Code with Webpack
+To ensure browser compatibility (for all major browsers post-2016 with >1% market share), the entire project is bundled with Webpack.
+
+Webpack handles:
+
+ES6+ transpilation via Babel
+
+Module bundling
+
+Static file serving (images/CSS) during development
+```
+// webpack.config.js
 module.exports = {
     // ...
     devServer: {
@@ -29,59 +52,93 @@ module.exports = {
     },
 }
 ```
-Szczegóły znajdziesz w [dokumentacji webpacka](https://webpack.js.org/configuration/dev-server/#devserverstatic).
 
-## Implementacja
+&nbsp;
 
-W plikach znajdziesz kod implementujący slider oraz nieusunięte komentarze, które miały ułatwić zbudowanie odpowiedniej logiki.
 
-Zadanie ma być wykonane w taki sposób, aby poniższy kod uruchamiał całą mechanikę rozwiązania:
+🔁 Custom Events Integration
+Just like the original implementation, the refactored version relies on a custom event system for interactivity:
 
-```javascript
-import JSSlider from './modules/JSSlider';
+js-slider-img-click
 
-const init = () => {
-    const imagesList = document.querySelectorAll('.gallery__item');
-    imagesList.forEach( img => {
-        img.dataset.sliderGroupName = Math.random() > 0.5 ? 'nice' : 'good';
-    });
+js-slider-img-next
 
-    const jsSlider = new JSSlider('.gallery__item');
-    jsSlider.run();
-}
+js-slider-img-prev
 
-document.addEventListener('DOMContentLoaded', init);
-```
+js-slider-close
 
-Najlepiej zbudować klasę `JSSlider` od zera. Należy stopniowo przenosić poszczególne rozwiązania z funkcji w pliku `script.js` do metod danej klasy.
+js-slider-start (NEW)
 
-Pamiętaj, że im częściej będziesz sprawdzać przenoszony kod, tym łatwiej będzie Ci się w nim odnaleźć.
+js-slider-stop (NEW)
 
-Kiedy już przeniesiesz rozwiązania 1 do 1 i wszystko będzie działać, wykonaj [refaktoryzację kodu](https://pl.wikipedia.org/wiki/Refaktoryzacja).
+These events promote decoupling, make debugging easier, and are useful for future event-based integrations.
 
-## Zadania dodatkowe
+🧠 Internal Features & Improvements
+Grouped images by dynamic data-slider-group-name
 
-### Zadanie 1
+Navigation with arrow buttons (looped cycling supported)
 
-Postaraj się wykorzystać właściwości obiektu (`this.imagesList`), zamiast przekazywać wartości zmiennych przez parametry funkcji (`initEvents(imagesList, sliderRootElement)`).
+Automatic slideshow start/stop on hover events
 
-To rozwiązanie zastosuj tylko dla zmiennych, które są wykorzystywane w różnych metodach.
+Internal this.imagesList property shared across methods (instead of parameter passing)
 
-### Zadanie 2
+🚀 Additional Functionality
+Task 1 – Property-based Internal State
+Instead of passing DOM elements to every method, key variables like image lists and current indexes are stored directly in the class instance (e.g. this.imagesList, this.currentGroup).
 
-Utwórz dwa dodatkowe CustomEvents o nazwach `js-slider-start` oraz `js-slider-stop`. Ich zadaniem będzie uruchomienie lub zatrzymanie automatycznego przełączania zdjęć.
+Task 2 – Auto Slideshow with Event Control
+Introduced two new custom events:
 
-Zdarzenie `js-slider-start` jest uruchamiane w dwóch przypadkach:
-- po kliknięciu w zdjęcie,
-- po zjechaniu kursorem ze strzałki.
+js-slider-start: triggers slideshow autoplay after clicking an image or leaving arrow hover
 
-Zdarzenie `js-slider-stop` jest uruchamiane, gdy użytkownik najedzie kursorem na strzałkę.
+js-slider-stop: pauses slideshow when hovering over arrows
 
-**Uwaga!** Sprawdź, czy wszystko działa poprawnie, gdy pokaz slajdów jest uruchamiany i zatrzymywany wielokrotnie.
+Edge cases (like multiple hover entries or restarts) were handled with timers and flags.
 
 
 &nbsp;
 
-> ⭐ ***README** to coś więcej niż opis. Poprzez nie **pokazujesz swoje mocne strony** – swoją dokładność, sposób myślenia i podejście do rozwiązywania problemów. Niech Twoje README pokaże, że masz **świetne predyspozycje do rozwoju!***
-> 
-> 🎁 *Zacznij od razu. Skorzystaj z **[szablonu README i wskazówek](https://github.com/devmentor-pl/readme-template)**.* 
+
+## 💡 Technologies
+<img src="https://skillicons.dev/icons?i=html,css,javascript,webpack,babel" /><br/>
+
+&nbsp;
+
+## 🔗 See also
+If you're interested in JavaScript-based UI projects, check out my other project: [Excursions Order Panel](https://code-mike-code.github.io/excursions-order-panel/)
+
+&nbsp;
+
+## 💿 Installation
+1. Clone the repository
+
+2. Run npm install
+
+3. Start development server:
+
+```
+npm start
+```
+
+&nbsp;
+
+## 🏁 Summary
+
+• This project gave me hands-on experience in:
+• Refactoring real-world legacy code using modern JS
+• Using Webpack and Babel for browser support
+• Structuring scalable UI components with classes and modules
+• Managing state and behavior using Custom Events
+• Applying software engineering best practices like encapsulation, SRP, and DRY
+
+&nbsp;
+
+## 🙋‍♂️ Let’s Connect!
+Got feedback, questions, or just want to talk about frontend stuff? I'm happy to hear from you!
+
+&nbsp;
+
+## 👏 Thanks / Credits
+Special thanks to devmentor.pl for providing this real-world exercise and mentorship support.
+
+&nbsp;
