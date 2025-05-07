@@ -56,7 +56,7 @@ module.exports = {
 &nbsp;
 
 
-🔁 Custom Events Integration
+## 🔁 Custom Events Integration
 Just like the original implementation, the refactored version relies on a custom event system for interactivity:
 
 js-slider-img-click
@@ -73,7 +73,7 @@ js-slider-stop (NEW)
 
 These events promote decoupling, make debugging easier, and are useful for future event-based integrations.
 
-🧠 Internal Features & Improvements
+## 🧠 Internal Features & Improvements
 Grouped images by dynamic data-slider-group-name
 
 Navigation with arrow buttons (looped cycling supported)
@@ -82,16 +82,16 @@ Automatic slideshow start/stop on hover events
 
 Internal this.imagesList property shared across methods (instead of parameter passing)
 
-🚀 Additional Functionality
+## 🚀 Additional Functionality
 Task 1 – Property-based Internal State
 Instead of passing DOM elements to every method, key variables like image lists and current indexes are stored directly in the class instance (e.g. this.imagesList, this.currentGroup).
 
 Task 2 – Auto Slideshow with Event Control
 Introduced two new custom events:
 
-js-slider-start: triggers slideshow autoplay after clicking an image or leaving arrow hover
+• js-slider-start: triggers slideshow autoplay after clicking an image or leaving arrow hover
 
-js-slider-stop: pauses slideshow when hovering over arrows
+• js-slider-stop: pauses slideshow when hovering over arrows
 
 Edge cases (like multiple hover entries or restarts) were handled with timers and flags.
 
