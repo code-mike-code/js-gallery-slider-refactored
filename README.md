@@ -1,6 +1,6 @@
 # JavaScript: ECMAScript 2015+ – Gallery Slider Refactor
 
-### See the live version of ECMAScript Gallery Slider
+### See the live version of [ECMAScript Gallery Slider](https://code-mike-code.github.io/js-gallery-slider-refactored/)
 
 This project is part of my learning path with the mentor program at devmentor.pl. The goal was to refactor a legacy image slider by applying modern JavaScript standards (ES6+), modular structure, and proper code separation.
 
